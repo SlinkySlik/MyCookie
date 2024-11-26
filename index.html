@@ -1,0 +1,1356 @@
+<html><head><base href="https://websim.world/">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MyCookie - Enhanced Edition</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
+
+@keyframes backgroundFade {
+  0% { background: #FFE4B5; }
+  50% { background: #F4A460; }
+  100% { background: #FFE4B5; }
+}
+
+:root {
+  --primary: #8B4513;  /* Cookie brown */
+  --secondary: #D2691E; /* Chocolate color */
+  --accent: #DEB887;  /* Light cookie color */
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: #F4A460;
+  color: var(--secondary);
+  animation: backgroundFade 10s ease-in-out infinite;
+}
+
+#loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.9);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+.loading-cookie {
+  width: 100px;
+  height: 100px;
+  animation: spinAndGlow 2s linear infinite;
+  filter: drop-shadow(0 0 10px rgba(255,165,0,0.5));
+}
+
+@keyframes spinAndGlow {
+  0% {
+    transform: rotate(0deg) scale(1);
+    filter: drop-shadow(0 0 10px rgba(255,165,0,0.5));
+  }
+  50% {
+    transform: rotate(180deg) scale(1.1);
+    filter: drop-shadow(0 0 20px rgba(255,165,0,0.8));
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+    filter: drop-shadow(0 0 10px rgba(255,165,0,0.5));
+  }
+}
+
+.progress-bar {
+  width: 200px;
+  height: 20px;
+  background: #2c2c2c;
+  border-radius: 30px;
+  margin-top: 20px;
+  overflow: hidden;
+  padding: 3px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5) inset, 
+              0 0 20px rgba(255,255,255,0.1);
+  border: 2px solid #444;
+}
+
+.progress {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  border-radius: 20px;
+  transition: width 0.3s ease;
+  box-shadow: 0 0 10px var(--primary);
+  animation: glow 1.5s ease-in-out infinite;
+}
+
+@keyframes glow {
+  0%, 100% { 
+    box-shadow: 0 0 10px var(--primary);
+  }
+  50% { 
+    box-shadow: 0 0 20px var(--secondary);
+  }
+}
+
+#loading-screen p {
+  color: white;
+  text-shadow: 0 0 10px rgba(255,165,0,0.5);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+}
+
+#didYouKnow {
+  font-style: italic;
+  max-width: 400px;
+  text-align: center;
+  margin-top: 20px;
+  padding: 15px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 10px;
+  backdrop-filter: blur(5px);
+}
+
+.game-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background: rgba(255, 248, 220, 0.95); /* Cornsilk color for container */
+  border: 8px double #8B4513; /* Double border like a cookie edge */
+}
+
+.game-title {
+  font-family: 'Fredoka One', cursive;
+  font-size: 4rem;
+  text-align: center;
+  color: #8B4513;
+  margin: 20px 0;
+  text-shadow: 
+    3px 3px 0 #D2691E,
+    -1px -1px 0 #DEB887,
+    2px -2px 0 #A0522D,
+    -2px 2px 0 #8B4513,
+    0 3px 6px rgba(0,0,0,0.4);
+  animation: titleFloat 3s ease-in-out infinite;
+}
+
+@keyframes titleFloat {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(2deg);
+  }
+}
+
+.game-title span {
+  display: inline-block;
+  animation: letterWiggle 2s ease-in-out infinite;
+  animation-delay: calc(0.1s * var(--i));
+}
+
+@keyframes letterWiggle {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-5deg);
+  }
+  75% {
+    transform: rotate(5deg);
+  }
+}
+
+.cookie-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+}
+
+#cookie {
+  width: 200px;
+  height: 200px;
+  transition: transform 0.1s;
+  cursor: pointer;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+  animation: glow 2s ease-in-out infinite;
+  display: block; /* Add this */
+  margin: 0 auto; /* Add this */
+}
+
+#cookie:hover {
+  transform: scale(1.05);
+}
+
+#cookie:active {
+  transform: scale(0.92);
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 20px 0;
+  padding: 15px;
+  background: #8B4513; /* Cookie brown */
+  color: white;
+  border: 3px solid #D2691E; /* Chocolate border */
+  animation: shake 0.5s ease-in-out;
+}
+
+.shop, .worlds, .tips {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  margin: 20px 0;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.tips {
+  background: #f8f9fa;
+}
+
+.tips-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+}
+
+.tips-content.show {
+  max-height: 1000px;
+}
+
+.tips-header {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background: #D2691E;
+  color: white;
+  border: 2px solid #8B4513;
+  border-radius: 5px;
+}
+
+.code-list {
+  background: linear-gradient(135deg, rgba(255, 248, 220, 0.95), rgba(255, 235, 205, 0.95));
+  border: 3px solid #D2691E;
+  box-shadow: inset 0 0 10px rgba(139, 69, 19, 0.3);
+}
+
+.code-item {
+  background: rgba(210, 105, 30, 0.1);
+  margin: 8px 0;
+  padding: 8px 12px;
+  border-radius: 5px;
+  border-left: 3px solid #8B4513;
+  transition: all 0.3s ease;
+}
+
+.code-item:hover {
+  background: rgba(210, 105, 30, 0.2);
+  transform: translateX(5px);
+}
+
+.button {
+  background: #D2691E; /* Chocolate color */
+  color: white;
+  border: 2px solid #8B4513;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.2s;
+  margin: 5px;
+  width: 100%;
+  max-width: 300px;
+}
+
+.button:hover {
+  animation: bounce 0.5s ease infinite;
+  background: #8B4513;
+  transform: translateY(-2px);
+}
+
+.button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes float {
+  0% { transform: translateY(0) rotate(0deg); }
+  100% { transform: translateY(-100px) rotate(360deg); }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes glow {
+  0%, 100% { filter: brightness(100%); }
+  50% { filter: brightness(120%); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-5deg); }
+  75% { transform: rotate(5deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes sparkle {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+
+.crumb {
+  position: fixed;
+  width: 8px;
+  height: 8px;
+  background: #D2691E;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: float 3s linear infinite;
+}
+
+#coins {
+  position: relative;
+  display: inline-block;
+}
+
+#coins::after {
+  content: '✨';
+  position: absolute;
+  right: -20px;
+  animation: sparkle 1s infinite;
+}
+
+.shop button, .worlds button {
+  opacity: 0;
+  animation: fadeIn 0.5s forwards;
+}
+
+.guide-button {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background: #8B4513;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: white;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  z-index: 100;
+  transition: transform 0.2s;
+}
+
+.guide-button:hover {
+  transform: scale(1.1);
+}
+
+.guide-menu {
+  position: fixed;
+  top: 0;
+  left: -100%;
+  width: 300px;
+  height: 100vh;
+  background: linear-gradient(45deg, rgba(139, 69, 19, 0.95), rgba(160, 82, 45, 0.95));
+  border-right: 4px solid #DEB887;
+  box-shadow: 5px 0 15px rgba(0,0,0,0.3);
+  padding: 20px;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+  transition: left 0.3s ease;
+  z-index: 99;
+  overflow-y: auto;
+  color: white;
+}
+
+.guide-menu.show {
+  left: 0;
+}
+
+.close-guide {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.guide-menu h2, .guide-menu h3 {
+  color: #FFE4B5;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  border-bottom: 2px solid #DEB887;
+  padding-bottom: 10px;
+  margin-top: 20px;
+}
+
+.code-list {
+  background: linear-gradient(135deg, rgba(255, 248, 220, 0.95), rgba(255, 235, 205, 0.95));
+  border: 3px solid #D2691E;
+  box-shadow: inset 0 0 10px rgba(139, 69, 19, 0.3);
+}
+
+.code-item {
+  background: rgba(210, 105, 30, 0.1);
+  margin: 8px 0;
+  padding: 8px 12px;
+  border-radius: 5px;
+  border-left: 3px solid #8B4513;
+  transition: all 0.3s ease;
+}
+
+.code-item:hover {
+  background: rgba(210, 105, 30, 0.2);
+  transform: translateX(5px);
+}
+
+.achievements {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  margin: 20px 0;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.achievements-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+  padding: 10px;
+}
+
+.achievement-card {
+  background: #f5f5f5;
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+  border: 2px solid #D2691E;
+  transition: transform 0.3s;
+}
+
+.achievement-card.earned {
+  background: linear-gradient(45deg, #ffd700, #ffa500);
+  color: white;
+  transform: scale(1.05);
+}
+
+.achievement-icon {
+  font-size: 2em;
+  margin-bottom: 10px;
+}
+
+.achievement-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: rgba(255, 215, 0, 0.95);
+  padding: 15px 25px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  z-index: 1000;
+  animation: slideIn 0.5s ease-out, fadeOut 0.5s ease-in 2.5s forwards;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+.level-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: #8B4513;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+.level-menu {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  width: 300px;
+  background: linear-gradient(45deg, rgba(139, 69, 19, 0.95), rgba(160, 82, 45, 0.95));
+  border: 4px double #DEB887;
+  box-shadow: 0 0 20px rgba(0,0,0,0.4);
+  padding: 20px;
+  border-radius: 10px;
+  color: white;
+  display: none;
+  z-index: 99;
+}
+
+.hack-menu {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  background: rgba(0, 0, 0, 0.9);
+  padding: 20px;
+  border-radius: 10px;
+  color: #00ff00;
+  display: none;
+  z-index: 1000;
+  font-family: monospace;
+}
+
+.hack-menu input {
+  background: rgba(0, 255, 0, 0.1);
+  border: 1px solid #00ff00;
+  color: #00ff00;
+  padding: 5px;
+  margin: 5px 0;
+  width: 100%;
+}
+
+.hack-menu button {
+  background: #00ff00;
+  color: black;
+  border: none;
+  padding: 5px 10px;
+  margin: 5px;
+  cursor: pointer;
+}
+
+.progress-bar {
+  border: 2px solid #DEB887;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
+  height: 25px;
+  margin: 15px 0;
+}
+
+.progress-fill {
+  background: linear-gradient(90deg, #D2691E, #8B4513);
+  box-shadow: 0 0 10px rgba(210, 105, 30, 0.5);
+}
+
+/* Loading screen enhancements */
+#loading-screen .progress-bar {
+  width: 250px;
+  height: 25px;
+  background: rgba(44, 44, 44, 0.8);
+  border: 3px solid #DEB887;
+  box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
+}
+
+#loading-screen .progress {
+  background: linear-gradient(90deg, #D2691E, #8B4513, #D2691E);
+  background-size: 200% 100%;
+  animation: progressGlow 2s ease infinite,
+             progressMove 2s linear infinite;
+}
+
+@keyframes progressMove {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+#loading-screen #didYouKnow {
+  background: rgba(222, 184, 135, 0.1);
+  border: 2px solid #DEB887;
+  box-shadow: 0 0 15px rgba(222, 184, 135, 0.2);
+  padding: 20px;
+  border-radius: 15px;
+  animation: glowPulse 2s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 15px rgba(222, 184, 135, 0.2); }
+  50% { box-shadow: 0 0 25px rgba(222, 184, 135, 0.4); }
+}
+</style>
+</head>
+<body>
+<div id="loading-screen">
+  <img src="https://file.garden/Z0Xlvk83ozp28Cac/Files/clipart206543.png" alt="Loading cookie" class="loading-cookie">
+  <div class="progress-bar">
+    <div class="progress"></div>
+  </div>
+  <p style="color: white">Loading your cookie adventure...</p>
+  <p id="didYouKnow" style="color: white; max-width: 400px; text-align: center; margin-top: 20px; font-style: italic;"></p>
+</div>
+
+<div class="game-container" style="display: none;">
+  <h1 class="game-title">
+    <span style="--i:1">M</span>
+    <span style="--i:2">y</span>
+    <span style="--i:3">C</span>
+    <span style="--i:4">o</span>
+    <span style="--i:5">o</span>
+    <span style="--i:6">k</span>
+    <span style="--i:7">i</span>
+    <span style="--i:8">e</span>
+  </h1>
+  <button class="guide-button" onclick="toggleGuide()">📖</button>
+
+  <div class="guide-menu" id="guideMenu">
+    <button class="close-guide" onclick="toggleGuide()">×</button>
+    <h2>📖 Game Guide & Tips</h2>
+    <h3>How to Play:</h3>
+    <ol>
+      <li>Click the cookie to earn clicks</li>
+      <li>Sell your clicks (10 clicks = 1 coin)</li>
+      <li>Buy better mice to increase your Clicks Per Second (CPS)</li>
+      <li>Unlock new worlds for additional boosts</li>
+      <li>Complete achievements to earn CookieZP and level up!</li>
+    </ol>
+    
+    <h3>Leveling System:</h3>
+    <ul>
+      <li>Each achievement earned = 100 CookieZP</li>
+      <li>Every 100 CookieZP = 1 Level</li>
+      <li>Track your progress in the cookie menu (🍪) at bottom right</li>
+    </ul>
+
+    <h3>Achievements:</h3>
+    <ul>
+      <li>🍪 First Click - Click once</li>
+      <li>💎 Coin Collector - Get 100 coins</li>
+      <li>🖱️ Mouse Buyer - Buy your first mouse</li>
+      <li>⭐ Click Master - Reach 10,000 clicks</li>
+      <li>💰 Coin Hoarder - Collect 5,000 coins</li>
+      <li>🖱️ Mouse Collector - Own 5 different mice</li>
+      <li>🌍 World Explorer - Unlock 3 worlds</li>
+      <li>⚡ Speed Clicker - Reach 100 CPS</li>
+    </ul>
+    
+    <h3>Worlds Available:</h3>
+    <ul>
+      <li>🌍 Normal World (1x boost)</li>
+      <li>🍫 Chocolate World (1.5x boost)</li>
+      <li>🍬 Sugar Rush World (2x boost)</li>
+      <li>✨ Golden Cookie World (3x boost)</li>
+      <li>🌈 Rainbow Cookie World (4x boost)</li>
+      <li>🌌 Cosmic Cookie World (5x boost)</li>
+      <li>⚛️ Quantum Cookie World (7x boost)</li>
+      <li>🌀 Cookie Vortex World (10x boost)</li>
+      <li>🕹️ Cookie Matrix World (15x boost)</li>
+      <li>♾️ Infinity Cookie World (25x boost)</li>
+    </ul>
+    
+    <h3>Available Codes:</h3>
+    <div class="code-list">
+      <div class="code-item">🍪 cookiemonster - Get 300 coins</div>
+      <div class="code-item">💧 watermouse - +10 CPS boost</div>
+      <div class="code-item">🔨 breakcookie - Get 500 coins</div>
+      <div class="code-item">✨ nuggets - +14 CPS boost</div>
+      <div class="code-item">🌟 goldcookie - Get 1000 coins</div>
+      <div class="code-item">❤️ redcookiemonster - +20 CPS boost</div>
+      <div class="code-item">🔥 supercookie - Get 2000 coins and +25 CPS boost</div>
+      <div class="code-item">⚡ megaboost - +50 CPS boost</div>
+      <div class="code-item">🎮 ultraclicker - Get 1500 coins and +30 CPS boost</div>
+      <div class="code-item">👑 mastermouse - Get 3000 coins</div>
+      <div class="code-item">🎯 epicgamer - +40 CPS boost</div>
+      <div class="code-item">👑 cookieking - Get 5000 coins and +60 CPS boost</div>
+    </div>
+
+    <h3>Special Features:</h3>
+    <ul>
+      <li>🔓 Complete all achievements and reach 1000 CPS to unlock the hack menu!</li>
+      <li>💫 Check your level progress in the cookie menu</li>
+    </ul>
+  </div>
+
+  <div class="cookie-container">
+    <img src="https://file.garden/Z0Xlvk83ozp28Cac/Files/1000004506-removebg-preview.png" id="cookie" alt="Close-up view of a large chocolate chip cookie with dark chocolate chunks">
+  </div>
+
+  <div class="stats">
+    <div>Clicks: <span id="clicks">0</span></div>
+    <div>Coins: <span id="coins">0</span></div>
+    <div>CPS: <span id="cps">1</span></div>
+  </div>
+
+  <button id="sellButton" class="button">Sell Clicks</button>
+
+  <div class="shop">
+    <h2>🛍️ Mouse Shop</h2>
+    <div id="mouseShop"></div>
+  </div>
+
+  <div class="worlds">
+    <h2>🌍 Worlds</h2>
+    <div id="worldShop"></div>
+  </div>
+
+  <div class="shop">
+    <h2>🎮 Game Options</h2>
+    <input type="text" id="codeInput" placeholder="Enter code here..." style="padding: 10px; width: 200px; margin: 10px;">
+    <button id="applyCodeButton" class="button">Apply Code</button>
+    <button id="saveGameButton" class="button">Save Game</button>
+    <p id="equippedMouse">No mouse equipped</p>
+  </div>
+
+  <div class="achievements">
+    <h2>🏆 Achievements</h2>
+    <div id="achievementsContainer" class="achievements-grid"></div>
+  </div>
+  
+  <button class="level-button" onclick="toggleLevelMenu()">🍪</button>
+
+  <div class="level-menu" id="levelMenu">
+    <h3>Level Progress</h3>
+    <p>Level: <span id="levelDisplay">0</span></p>
+    <p>CookieZP: <span id="zpDisplay">0</span></p>
+    <div class="progress-bar">
+      <div class="progress-fill" id="levelProgress"></div>
+    </div>
+    <p>Achievements completed: <span id="achievementCount">0</span></p>
+  </div>
+
+  <div class="hack-menu" id="hackMenu">
+    <h3>🔓 Hack Menu</h3>
+    <input type="number" id="clicksInput" placeholder="Set Clicks">
+    <input type="number" id="coinsInput" placeholder="Set Coins">
+    <input type="number" id="cpsInput" placeholder="Set CPS">
+    <button onclick="applyHacks()">Apply</button>
+  </div>
+</div>
+
+<script>
+const funFacts = [
+  "Did you know? The world's biggest cookie weighed 40,000 pounds!",
+  "The chocolate chip cookie was invented by accident in 1930.",
+  "The word 'cookie' comes from the Dutch word 'koekje'.",
+  "Over 7 billion homemade cookies are enjoyed every year!",
+  "The first cookies date back to 7th century Persia.",
+  "National Cookie Day is celebrated on December 4th.",
+  "The average person eats 35,000 cookies in their lifetime!",
+  "Cookies were originally used to test oven temperatures.",
+  "The largest cookie mosaic ever made used 16,390 cookies!",
+  "Early American settlers made their cookies with ginger and molasses.",
+  "Ancient Roman cookies were made with honey and pepper!",
+  "Medieval cookies were often used as travel food.",
+  "The first cookie cutters were made in the 16th century.",
+  "Some cultures believed cookies had magical properties!",
+  "The aroma of baking cookies can make people feel happier!"
+];
+
+const gameCodes = {
+  'cookiemonster': { coins: 300, used: false },
+  'watermouse': { cpsBoost: 10, used: false },
+  'breakcookie': { coins: 500, used: false },
+  'nuggets': { cpsBoost: 14, used: false },
+  'goldcookie': { coins: 1000, used: false },
+  'redcookiemonster': { cpsBoost: 20, used: false },
+  'supercookie': { coins: 2000, cpsBoost: 25, used: false },
+  'megaboost': { cpsBoost: 50, used: false },
+  'ultraclicker': { coins: 1500, cpsBoost: 30, used: false },
+  'mastermouse': { coins: 3000, used: false },
+  'epicgamer': { cpsBoost: 40, used: false },
+  'cookieking': { coins: 5000, cpsBoost: 60, used: false }
+};
+
+let gameState = {
+  clicks: 0,
+  coins: 0,
+  baseClickRate: 1,
+  cpsBoosts: 0,
+  currentWorld: 'normal',
+  equippedMouse: null,
+  unlockedMice: {},
+  unlockedWorlds: {},
+  clickRate: 1,  // Added this to ensure it's defined
+  achievements: {},
+  cookieZP: 0,
+  level: 0,
+  achievementsCompleted: 0
+};
+
+// Mouse configurations
+const mice = {
+  normalMouse: { rate: 1, cost: 0, name: "Normal Mouse" },
+  goldMouse: { rate: 4, cost: 150, name: "Gold Mouse" },
+  diamondMouse: { rate: 8, cost: 200, name: "Diamond Mouse" },
+  cookieMonsterMouse: { rate: 16, cost: 350, name: "Cookie Monster Mouse" },
+  nullMouse: { rate: 27, cost: 500, name: "Null Mouse" },
+  lavaMouse: { rate: 37, cost: 1000, name: "Lava Mouse" },
+  superMouse: { rate: 50, cost: 1500, name: "Super Mouse" },
+  hardcoreMouse: { rate: 100, cost: 2000, name: "Hardcore Mouse" },
+  marcoMouse: { rate: 300, cost: 3000, name: "Marco Mouse" }
+};
+
+const worlds = {
+  normal: { 
+    name: "Normal World", 
+    boost: 1, 
+    cost: 0 
+  },
+  chocolate: { 
+    name: "Chocolate World", 
+    boost: 1.5, 
+    cost: 1000 
+  },
+  sugar: { 
+    name: "Sugar Rush World", 
+    boost: 2, 
+    cost: 2500 
+  },
+  golden: { 
+    name: "Golden Cookie World", 
+    boost: 3, 
+    cost: 5000 
+  },
+  rainbow: { 
+    name: "Rainbow Cookie World", 
+    boost: 4, 
+    cost: 10000 
+  },
+  cosmic: { 
+    name: "Cosmic Cookie World", 
+    boost: 5, 
+    cost: 20000 
+  },
+  quantum: { 
+    name: "Quantum Cookie World", 
+    boost: 7, 
+    cost: 35000 
+  },
+  vortex: { 
+    name: "Cookie Vortex World", 
+    boost: 10, 
+    cost: 50000 
+  },
+  matrix: { 
+    name: "Cookie Matrix World", 
+    boost: 15, 
+    cost: 100000 
+  },
+  infinity: { 
+    name: "Infinity Cookie World", 
+    boost: 25, 
+    cost: 250000 
+  }
+};
+
+const achievements = {
+  firstClick: {
+    id: "firstClick",
+    name: "First Click!",
+    description: "Click the cookie for the first time",
+    icon: "🍪",
+    earned: false,
+    check: (state) => state.clicks >= 1
+  },
+  coinCollector: {
+    id: "coinCollector",
+    name: "Coin Collector",
+    description: "Collect your first 100 coins",
+    icon: "💎",
+    earned: false,
+    check: (state) => state.coins >= 100
+  },
+  mouseBuyer: {
+    id: "mouseBuyer",
+    name: "Mouse Buyer",
+    description: "Buy your first mouse",
+    icon: "🖱️",
+    earned: false,
+    check: (state) => Object.keys(state.unlockedMice).length >= 1
+  },
+  clickMaster: {
+    id: "clickMaster",
+    name: "Click Master",
+    description: "Reach 10,000 total clicks",
+    icon: "⭐",
+    earned: false,
+    check: (state) => state.clicks >= 10000
+  },
+  coinHoarder: {
+    id: "coinHoarder", 
+    name: "Coin Hoarder",
+    description: "Collect 5,000 coins",
+    icon: "💰",
+    earned: false,
+    check: (state) => state.coins >= 5000
+  },
+  mouseCollector: {
+    id: "mouseCollector",
+    name: "Mouse Collector",
+    description: "Own 5 different mice",
+    icon: "🖱️",
+    earned: false,
+    check: (state) => Object.keys(state.unlockedMice).length >= 5
+  },
+  worldExplorer: {
+    id: "worldExplorer",
+    name: "World Explorer",
+    description: "Unlock 3 different worlds",
+    icon: "🌍",
+    earned: false, 
+    check: (state) => Object.keys(state.unlockedWorlds).length >= 3
+  },
+  speedClicker: {
+    id: "speedClicker",
+    name: "Speed Clicker",
+    description: "Reach 100 CPS",
+    icon: "⚡",
+    earned: false,
+    check: (state) => calculateTotalClickRate() >= 100
+  }
+};
+
+// Update calculateTotalClickRate() to include world boosts
+function calculateTotalClickRate() {
+  const baseRate = gameState.equippedMouse ? mice[gameState.equippedMouse].rate : 1;
+  const worldBoost = gameState.currentWorld && worlds[gameState.currentWorld] ? worlds[gameState.currentWorld].boost : 1;
+  return (baseRate + gameState.cpsBoosts) * worldBoost;
+}
+
+function applyCode(code) {
+  const lowerCode = code.toLowerCase();
+  if (gameCodes[lowerCode] && !gameCodes[lowerCode].used) {
+    if (gameCodes[lowerCode].coins) {
+      gameState.coins += gameCodes[lowerCode].coins;
+    }
+    if (gameCodes[lowerCode].cpsBoost) {
+      gameState.cpsBoosts += gameCodes[lowerCode].cpsBoost;
+    }
+    gameCodes[lowerCode].used = true;
+    gameState.clickRate = calculateTotalClickRate();
+    updateDisplay();
+    renderShops();
+    saveGameData(gameState);
+    return true;
+  }
+  return false;
+}
+
+function checkAchievements() {
+  Object.values(achievements).forEach(achievement => {
+    if (!gameState.achievements[achievement.id] && achievement.check(gameState)) {
+      gameState.achievements[achievement.id] = true;
+      gameState.achievementsCompleted++;
+      addCookieZP(100);
+      showAchievementNotification(achievement);
+      renderAchievements();
+      saveGameData(gameState);
+      
+      // Check if all achievements are completed and CPS >= 1000
+      const allAchievementsCompleted = Object.values(achievements)
+        .every(a => gameState.achievements[a.id]);
+      
+      if (allAchievementsCompleted && calculateTotalClickRate() >= 1000) {
+        document.getElementById('hackMenu').style.display = 'block';
+      }
+    }
+  });
+}
+
+function showAchievementNotification(achievement) {
+  const notification = document.createElement('div');
+  notification.className = 'achievement-notification';
+  notification.innerHTML = `
+    ${achievement.icon} Achievement Unlocked!<br>
+    ${achievement.name}
+  `;
+  document.body.appendChild(notification);
+  setTimeout(() => notification.remove(), 3000);
+}
+
+function showLevelUpNotification(level) {
+  const notification = document.createElement('div');
+  notification.className = 'achievement-notification';
+  notification.style.background = '#ffd700'; // Gold background for level up
+  notification.innerHTML = `
+    🍪 Level Up!<br>
+    You reached level ${level}
+  `;
+  document.body.appendChild(notification);
+  setTimeout(() => notification.remove(), 3000);
+}
+
+function addCookieZP(amount) {
+  const previousLevel = gameState.level;
+  gameState.cookieZP += amount;
+  
+  // Check for level ups
+  while (gameState.cookieZP >= 100) {
+    gameState.level++;
+    gameState.cookieZP -= 100;
+    
+    // Show level up notification
+    showLevelUpNotification(gameState.level);
+  }
+  
+  updateLevelDisplay();
+  saveGameData(gameState); // Save after level changes
+}
+
+function renderAchievements() {
+  const container = document.getElementById('achievementsContainer');
+  container.innerHTML = '';
+  
+  Object.values(achievements).forEach(achievement => {
+    const earned = gameState.achievements[achievement.id];
+    const card = document.createElement('div');
+    card.className = `achievement-card ${earned ? 'earned' : ''}`;
+    card.innerHTML = `
+      <div class="achievement-icon">${achievement.icon}</div>
+      <h3>${achievement.name}</h3>
+      <p>${achievement.description}</p>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function toggleGuide() {
+  const guideMenu = document.getElementById('guideMenu');
+  guideMenu.classList.toggle('show');
+}
+
+function toggleLevelMenu() {
+  const menu = document.getElementById('levelMenu');
+  menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+}
+
+function updateLevelDisplay() {
+  document.getElementById('levelDisplay').textContent = gameState.level;
+  document.getElementById('zpDisplay').textContent = gameState.cookieZP;
+  document.getElementById('achievementCount').textContent = gameState.achievementsCompleted;
+  
+  const progress = document.getElementById('levelProgress');
+  const nextLevelZP = (gameState.level + 1) * 100;
+  const percentage = (gameState.cookieZP % 100) / 100 * 100;
+  progress.style.width = `${percentage}%`;
+}
+
+async function executeSqlQuery(query) {
+  try {
+    const response = await fetch('/api/v1/sql/?' + new URLSearchParams({sql: query}));
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Database operation failed:', error);
+    return null;
+  }
+}
+
+async function createGameTable() {
+  let query = `CREATE TABLE IF NOT EXISTS game_data (
+    id INTEGER PRIMARY KEY,
+    user_id TEXT,
+    clicks INTEGER,
+    coins INTEGER,
+    click_rate INTEGER,
+    base_click_rate INTEGER,
+    cps_boosts INTEGER,
+    equipped_mouse TEXT,
+    current_world TEXT,
+    unlocked_mice TEXT,
+    unlocked_worlds TEXT,
+    achievements TEXT,
+    cookieZP INTEGER,
+    level INTEGER
+  )`;
+  
+  try {
+    await executeSqlQuery(query);
+  } catch (error) {
+    console.error('Failed to create game table:', error);
+  }
+}
+
+async function saveGameData(gameData) {
+  try {
+    const user = await window.websim.getUser();
+    if (!user) {
+      console.warn('No user found, saving locally instead');
+      localStorage.setItem('clickerGameSave', JSON.stringify(gameData));
+      return;
+    }
+    
+    const query = `INSERT OR REPLACE INTO game_data 
+      (user_id, clicks, coins, click_rate, base_click_rate, cps_boosts, equipped_mouse, current_world, unlocked_mice, unlocked_worlds, achievements, cookieZP, level) 
+      VALUES (
+        '${user.id}',
+        ${gameData.clicks},
+        ${gameData.coins},
+        ${gameData.clickRate},
+        ${gameData.baseClickRate},
+        ${gameData.cpsBoosts},
+        '${gameData.equippedMouse || "none"}',
+        '${gameData.currentWorld}',
+        '${JSON.stringify(gameData.unlockedMice)}',
+        '${JSON.stringify(gameData.unlockedWorlds)}',
+        '${JSON.stringify(gameData.achievements)}',
+        ${gameData.cookieZP || 0},
+        ${gameData.level || 0}
+      )`;
+      
+    const result = await executeSqlQuery(query);
+    if (!result) {
+      localStorage.setItem('clickerGameSave', JSON.stringify(gameData));
+    }
+  } catch (error) {
+    console.error('Failed to save game data:', error);
+    localStorage.setItem('clickerGameSave', JSON.stringify(gameData));
+  }
+}
+
+async function loadGameData() {
+  try {
+    const user = await window.websim.getUser();
+    if (!user) {
+      console.warn('No user found, loading from localStorage');
+      return JSON.parse(localStorage.getItem('clickerGameSave'));
+    }
+    
+    const query = `SELECT * FROM game_data WHERE user_id = '${user.id}'`;
+    const data = await executeSqlQuery(query);
+    
+    if (!data || data.length === 0) {
+      const localData = localStorage.getItem('clickerGameSave');
+      return localData ? JSON.parse(localData) : null;
+    }
+    
+    // Parse cookieZP and level from the stored data
+    const savedData = data[0];
+    savedData.cookieZP = parseInt(savedData.cookieZP) || 0;
+    savedData.level = parseInt(savedData.level) || 0;
+    
+    return savedData;
+  } catch (error) {
+    console.error('Failed to load game data:', error);
+    const localData = localStorage.getItem('clickerGameSave');
+    return localData ? JSON.parse(localData) : null;
+  }
+}
+
+// Loading screen simulation
+window.onload = async function() {
+  // Display a random fun fact
+  const didYouKnow = document.getElementById('didYouKnow');
+  didYouKnow.textContent = funFacts[Math.floor(Math.random() * funFacts.length)];
+
+  try {
+    await createGameTable();
+    const loadedData = await loadGameData();
+    
+    if (loadedData) {
+      gameState = {
+        clicks: loadedData.clicks || 0,
+        coins: loadedData.coins || 0,
+        baseClickRate: loadedData.base_click_rate || 1,
+        cpsBoosts: loadedData.cps_boosts || 0,
+        currentWorld: loadedData.current_world || 'normal',
+        equippedMouse: loadedData.equipped_mouse === 'none' ? null : loadedData.equipped_mouse,
+        unlockedMice: loadedData.unlocked_mice ? JSON.parse(loadedData.unlocked_mice) : {},
+        unlockedWorlds: loadedData.unlocked_worlds ? JSON.parse(loadedData.unlocked_worlds) : {},
+        achievements: loadedData.achievements ? JSON.parse(loadedData.achievements) : {},
+        cookieZP: loadedData.cookieZP || 0,
+        level: loadedData.level || 0,
+        achievementsCompleted: loadedData.achievementsCompleted || 0
+      };
+    }
+  } catch (error) {
+    console.error('Failed to initialize game data:', error);
+  }
+
+  let progress = 0;
+  const progressBar = document.querySelector('.progress');
+  const interval = setInterval(() => {
+    progress += 5;
+    progressBar.style.width = `${progress}%`;
+    if (progress >= 100) {
+      clearInterval(interval);
+      document.getElementById('loading-screen').style.display = 'none';
+      document.querySelector('.game-container').style.display = 'block';
+      initializeGame();
+    }
+  }, 100);
+};
+
+function initializeGame() {
+  updateDisplay();
+  setupEventListeners();
+  renderShops();
+  renderAchievements();
+  updateLevelDisplay();  // Add this line
+}
+
+function updateDisplay() {
+  document.getElementById('clicks').textContent = gameState.clicks;
+  document.getElementById('coins').textContent = gameState.coins;
+  document.getElementById('cps').textContent = calculateTotalClickRate();
+  document.getElementById('equippedMouse').textContent = 
+    gameState.equippedMouse ? `Equipped: ${mice[gameState.equippedMouse].name}` : 'No mouse equipped';
+}
+
+function renderShops() {
+  const mouseShop = document.getElementById('mouseShop');
+  mouseShop.innerHTML = '';
+  Object.entries(mice).forEach(([id, mouse]) => {
+    const button = document.createElement('button');
+    button.className = 'button';
+    button.id = id;
+    button.textContent = `${mouse.name} (${mouse.rate} CPS) - ${mouse.cost} Coins`;
+    button.disabled = gameState.coins < mouse.cost || gameState.unlockedMice[id];
+    mouseShop.appendChild(button);
+  });
+
+  const worldShop = document.getElementById('worldShop');
+  worldShop.innerHTML = '';
+  Object.entries(worlds).forEach(([id, world]) => {
+    const button = document.createElement('button');
+    button.className = 'button';
+    button.id = id;
+    button.textContent = `${world.name} (${world.boost}x Boost) - ${world.cost} Coins`;
+    button.disabled = gameState.coins < world.cost || gameState.unlockedWorlds[id];
+    worldShop.appendChild(button);
+  });
+}
+
+function setupEventListeners() {
+  document.getElementById('cookie').addEventListener('click', (e) => {
+    gameState.clicks += calculateTotalClickRate();
+    updateDisplay();
+    checkAchievements();
+    
+    // Create 3 crumbs on each click
+    for(let i = 0; i < 3; i++) {
+      createCrumb(e.clientX + (Math.random() * 20 - 10), e.clientY + (Math.random() * 20 - 10));
+    }
+  });
+
+  document.getElementById('sellButton').addEventListener('click', () => {
+    const clicksToSell = Math.floor(gameState.clicks / 10);
+    gameState.coins += clicksToSell;
+    gameState.clicks -= clicksToSell * 10;
+    updateDisplay();
+    renderShops();
+    checkAchievements();
+  });
+
+  document.getElementById('mouseShop').addEventListener('click', (e) => {
+    if (e.target.tagName === 'BUTTON') {
+      const mouseId = e.target.id;
+      const mouse = mice[mouseId];
+      if (gameState.coins >= mouse.cost && !gameState.unlockedMice[mouseId]) {
+        gameState.coins -= mouse.cost;
+        gameState.equippedMouse = mouseId;
+        gameState.unlockedMice[mouseId] = true;
+        gameState.clickRate = calculateTotalClickRate();
+        updateDisplay();
+        renderShops();
+        saveGameData(gameState);
+        checkAchievements();
+      }
+    }
+  });
+
+  document.getElementById('worldShop').addEventListener('click', (e) => {
+    if (e.target.tagName === 'BUTTON') {
+      const worldId = e.target.id;
+      const world = worlds[worldId];
+      if (gameState.coins >= world.cost && !gameState.unlockedWorlds[worldId]) {
+        gameState.coins -= world.cost;
+        gameState.currentWorld = worldId;
+        gameState.unlockedWorlds[worldId] = true;
+        gameState.clickRate = calculateTotalClickRate();
+        updateDisplay();
+        renderShops();
+        saveGameData(gameState);
+        checkAchievements();
+      }
+    }
+  });
+
+  document.getElementById('applyCodeButton').addEventListener('click', () => {
+    const codeInput = document.getElementById('codeInput');
+    const code = codeInput.value.trim();
+    
+    if (applyCode(code)) {
+      alert('Code applied successfully!');
+      codeInput.value = '';
+    } else {
+      alert('Invalid code or code already used!');
+    }
+  });
+
+  document.getElementById('saveGameButton').addEventListener('click', () => {
+    saveGameData(gameState);
+    alert('Game saved!');
+  });
+
+  setInterval(() => saveGameData(gameState), 60000);
+}
+
+function createCrumb(x, y) {
+  const crumb = document.createElement('div');
+  crumb.className = 'crumb';
+  crumb.style.left = `${x}px`;
+  crumb.style.top = `${y}px`;
+  document.body.appendChild(crumb);
+  
+  setTimeout(() => {
+    crumb.remove();
+  }, 3000);
+}
+
+function applyHacks() {
+  const clicks = parseInt(document.getElementById('clicksInput').value);
+  const coins = parseInt(document.getElementById('coinsInput').value);
+  const cps = parseInt(document.getElementById('cpsInput').value);
+  
+  if (!isNaN(clicks)) gameState.clicks = clicks;
+  if (!isNaN(coins)) gameState.coins = coins;
+  if (!isNaN(cps)) gameState.cpsBoosts = cps;
+  
+  updateDisplay();
+  renderShops();
+  saveGameData(gameState);
+}
+</script>
+</body></html>
